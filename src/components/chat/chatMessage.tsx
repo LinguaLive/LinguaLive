@@ -1,4 +1,24 @@
-
+export default function ChatMessage() {
+  return (
+    <div>
+      <div>
+      ~~~~Sam Pull: Message!
+      </div>
+      <div>
+      ~~~~Sam Pull: Message!
+      </div>
+      <div>
+      ~~~~Sam Pull: Message!
+      </div>
+      <div>
+      ~~~~Sam Pull: Message!
+      </div>
+      <div>
+      ~~~~Sam Pull: Message!
+      </div>
+    </div>
+  )
+}
 
 
 
