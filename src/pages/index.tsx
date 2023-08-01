@@ -1,8 +1,9 @@
+import { RoomContext } from '@/context/RoomContext';
 import type { InferGetServerSidePropsType, GetServerSideProps } from 'next';
 import Link from 'next/link';
 import NewRoomForm from '@/components/NewRoomForm';
-import { useState } from 'react';
-
+import { useRouter } from 'next/router';
+import { useContext } from 'react';
 
 type room = {
   id: string,
@@ -23,12 +24,14 @@ export const getServerSideProps: GetServerSideProps = async () => {
   }
 }
 
-function Home({ chatrooms }: HomeProps) {
-  const [modalOpen, setModalOpen] = useState(false);
-  const handleOpen = () => {
-    setModalOpen(true);
-  }
-  const handleClose = () => setModalOpen(false);
+function Home({ chatrooms }:HomeProps) {
+  const { ws } = useContext(RoomContext);
+  const router = useRouter();
+
+  const joinRoom = async (id: string) => {
+    await ws.send(JSON.stringify({type: 'join-room', room: id}));
+    router.push(`/chatroom/${id}`)
+  };
 
   // Will need to fetch list of chatrooms from database here
   const chatroomList = chatrooms.map(room => {
@@ -37,7 +40,7 @@ function Home({ chatrooms }: HomeProps) {
       <li key={id} className='m-2 text-white list-none'>
         <p className=' text-xl mb-1 font-semibold'>{name}</p>
         <p className=' text-xs'># of participants</p>
-        <Link href={`/chatroom/${id}`}className='btn btn-secondary btn-sm rounded-full m-2 text-base-100'>Click to Join</Link>
+        <button onClick={() => joinRoom(id)} className='btn btn-secondary btn-sm rounded-full m-2 text-base-100'>Click to Join</button>
       </li>
     )
   })
