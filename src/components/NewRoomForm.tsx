@@ -1,7 +1,11 @@
 import { useRouter } from "next/router";
 import { useState } from "react";
 
-const NewRoomForm = () => {
+interface NewRoomFormProps {
+  onClose: () => void
+}
+
+const NewRoomForm = ({onClose}:NewRoomFormProps) => {
   const router = useRouter();
   const [emptyName, setEmptyName] = useState(false)
 
@@ -24,7 +28,7 @@ const NewRoomForm = () => {
   return (
     <dialog id="new_room" className="modal inset-0">
       <form method="dialog" className="modal-box flex flex-col items-center" onSubmit={(e) => handleSubmit(e)}>
-        <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+        <button onClick={onClose} className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
         <p className="py-4 font-medium text-lg">Enter a name for your room</p>
         <input type="text" placeholder="Type here" className="input input-bordered input-md w-full max-w-xs" />
         {emptyName && (
