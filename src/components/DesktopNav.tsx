@@ -24,7 +24,7 @@ const DesktopNav = ({session}: DesktopNavProps) => {
           </div>
         ) : (
             <>
-              <button onClick={() => signIn()} className="btn btn-primary">Sign In</button>
+              <button onClick={() => signIn()} className="btn btn-primary btn-outline bg-base-100 opacity-80">Sign In</button>
             </>
         )}
       </div>
