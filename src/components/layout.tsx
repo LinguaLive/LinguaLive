@@ -1,9 +1,28 @@
-import RoomProvider from '@/context/RoomContext';
+import RoomProvider from "@/context/RoomContext";
+import Nav from "./Nav";
 
-export default function Layout({ children }: { children: React.ReactNode }) {
+export const metadata = {
+  title: 'LinguaLive',
+  description: 'Practice a language and connect with friends',
+};
+
+type LayoutProps = {
+  children: React.ReactNode,
+}
+
+const Layout = ({children}: LayoutProps) => {
   return (
     <RoomProvider>
-      <main>{children}</main>
+      <div className='main'>
+        <div className='gradient'/>
+      </div>
+
+      <main className="app">
+        <Nav />
+        {children}
+      </main>
     </RoomProvider>
-  );
+  )
 }
+
+export default Layout;
