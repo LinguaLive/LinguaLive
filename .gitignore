@@ -36,4 +36,8 @@ yarn-error.log*
 next-env.d.ts
 
 .env
+<<<<<<< HEAD
 .vscode/
+=======
+.vscode
+>>>>>>> ben/login
