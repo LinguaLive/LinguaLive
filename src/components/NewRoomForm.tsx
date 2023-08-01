@@ -16,6 +16,9 @@ const NewRoomForm = ({onClose}:NewRoomFormProps) => {
     if (input && input.value !== '') {
       const createRoom = await fetch('/api/chatrooms', {
         method: 'POST',
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify({ name: input.value })
       });
       const newRoom = await createRoom.json();
