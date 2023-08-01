@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from 'next/link'
 
 interface LoginFormProps {
   form?: { notVerified: boolean };
@@ -10,13 +11,22 @@ const LoginForm: React.FC<LoginFormProps> = ({ form }) => {
       <h2 className="mt-2 text-center text-3xl font-bold tracking-tight text-base-content">
         Please login to your account
       </h2>
+      <div>
       <p className="text-center mt-1">
         Or{' '}
-        <a href="/register" className="text-secondary font-medium hover:cursor-pointer hover:underline">
+        <Link href="/signup/signup" className="text-primary font-medium hover:cursor-pointer hover:underline">
           register
-        </a>{' '}
+        </Link>{' '}
         if you do not have an account.
       </p>
+      <p className="text-center mt-1">
+        Click {' '}
+        <Link href="/resetpw/resetpw" className="text-primary font-medium hover:cursor-pointer hover:underline">
+          here
+        </Link>{' '}
+        if you need to reset your password.
+      </p>
+      </div>
       <form action="?/login" method="POST" className="flex flex-col items-center space-y-2 w-full pt-4 pb-8">
         <div className="form-control w-full max-w-md">
           <label htmlFor="email" className="label font-medium pb-1">

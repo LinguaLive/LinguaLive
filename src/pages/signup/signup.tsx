@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from 'next/link'
 
 const RegisterForm: React.FC = () => {
   return (
@@ -8,9 +9,9 @@ const RegisterForm: React.FC = () => {
       </h2>
       <p className="text-center mt-1">
         Or{' '}
-        <a href="/login" className="text-secondary font-medium hover:cursor-pointer hover:underline">
+        <Link href="/login/login" className="text-secondary font-medium hover:cursor-pointer hover:underline">
           sign in
-        </a>{' '}
+        </Link>{' '}
         if you already have an account.
       </p>
       <form action="?/register" method="POST" className="flex flex-col items-center space-y-2 w-full pt-4">
