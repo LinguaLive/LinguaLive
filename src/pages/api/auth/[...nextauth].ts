@@ -35,7 +35,7 @@ export const authOptions:NextAuthOptions = {
         // // if not, create a new user
         if (!userExists) {
   
-          User.create({
+          await User.create({
             email: profile.email,
             username: profile.name.replace(/\s/g, '').toLowerCase(),
             profile_pic: profile.picture
