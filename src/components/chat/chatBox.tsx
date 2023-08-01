@@ -8,25 +8,15 @@ import ChatInput from './chatInput';
 
 
 
-// define type of chatbox state at highest level here
-type chatBoxState = {
-  messages: {
-    user: string,
-    content: string
-  }[],
-  activeUsers: string[];
-}
-// intialize chatbox state
-
 
 // fetch for chatroom info from db or let it be passed in from higher up??? / websocket data
 
 // chatbox will render ChatFeed, ChatInput, ChatSendButton
-export default function ChatBox() {
+export default function ChatBox(prop) {
   return (
     <div>
       ChatBox
-      <ChatFeed></ChatFeed>
+      <ChatFeed state={prop.state}></ChatFeed>
       <ChatInput></ChatInput>
     </div>
   )

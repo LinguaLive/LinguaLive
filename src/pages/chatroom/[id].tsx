@@ -3,10 +3,44 @@
 import ChatBox from "@/components/chat/chatBox"
 import VideoBox from "@/components/video/videoBox"
 
-export default function Chatroom() {
+type chatBoxStateType = {
+  messages: {
+    user: string,
+    content: string
+  }[],
+  activeUsers: string[];
+};
+// intialize chatbox state with dummy data
+const chatBoxState: chatBoxStateType = {
+  messages: [
+    {
+      user: 'Waisan',
+      content: 'Yo!'
+    },
+    {
+      user: 'Sunny',
+      content: 'Yo'
+    },
+    {
+      user: 'Alwin',
+      content: 'wazgud'
+    },
+    {
+      user: 'Ben',
+      content: 'Sup'
+    },
+    {
+      user: 'Waisan',
+      content: 'Ni haody!'
+    }
+  ],
+  activeUsers: ['Waisan', 'Sunny', 'Alwin', 'Jiyoung', 'Ben']
+};
+
+export default function Chatroom(chatBoxState: chatBoxStateType) {
   return (
     <div>
-      <ChatBox></ChatBox>
+      <ChatBox state={chatBoxState}></ChatBox>
       <VideoBox></VideoBox>
     </div>
   )
