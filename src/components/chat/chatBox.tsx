@@ -8,7 +8,7 @@ import ChatInput from './chatInput';
 
 
 
-// define chatbox state at highest level here
+// define type of chatbox state at highest level here
 type chatBoxState = {
   messages: {
     user: string,
@@ -16,6 +16,8 @@ type chatBoxState = {
   }[],
   activeUsers: string[];
 }
+// intialize chatbox state
+
 
 // fetch for chatroom info from db or let it be passed in from higher up??? / websocket data
 
