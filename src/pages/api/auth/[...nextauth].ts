@@ -2,10 +2,8 @@ import NextAuth from "next-auth/next";
 import type { NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import GithubProvider from "next-auth/providers/github";
-
-
-// Need to connect to the database to store user information
-// Need to import user model
+import dbConnect from "../../../../lib/dbConnect";
+import User from "../../../../models/User";
 
 
 export const authOptions:NextAuthOptions = {
@@ -21,28 +19,29 @@ export const authOptions:NextAuthOptions = {
   ],
   secret: process.env.NEXTAUTH_SECRET,
   callbacks: {
-    // // This is searching for the user in the database by their email and adding their _id from Mongo to the session object so it can be referenced globally in the app by the useSession hook
-    // async session(params) {
-    //   const { session } = params ;
-    //   const sessionUser = await User.findOne({
-    //     email: session.user.email
-    //   })
-    //   session.user.id = sessionUser._id.toString();
-    //   return session;
-    // },
     async signIn(params) {
       const { user, account, profile } = params;
-      console.log(profile)
+      // console.log(profile)
+
       try {
+        await dbConnect()
+        .then(() => "Connected to MongoDB Database")
+        .catch((error) => {
+          error: 'Connection Failed...!';
+        })
+
         // // check if user already exists
-        // const userExists = await User.findOne({ email: profile.email });
+        const userExists = await User.findOne({ email: profile.email });
         // // if not, create a new user
-        // if (!userExists) {
-        //   await User.create({
-        //     email: profile.email,
-        //     username: profile.name.replace(" ", "").toLowerCase(),
-        //     image: profile.picture
-        //   })
+        if (!userExists) {
+  
+          User.create({
+            email: profile.email,
+            username: profile.name.replace(/\s/g, '').toLowerCase(),
+            profile_pic: profile.picture
+          })
+
+        }
         return true;
       } catch (error) {
         console.error(error);
