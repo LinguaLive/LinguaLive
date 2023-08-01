@@ -5,6 +5,6 @@
       "outDir": "dist",
       "strict": true
     },
-    "include": ["ws-server.ts"]
+    "include": ["src/ws-server.ts"]
   }
   
