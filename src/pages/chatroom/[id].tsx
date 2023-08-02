@@ -4,7 +4,17 @@ import ChatBox from '@/components/chat/chatBox';
 import VideoBox from '@/components/video/videoBox';
 import { RoomContext } from '@/context/RoomContext';
 import { useRouter } from 'next/router';
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useState } from 'react';
+
+type chatBoxStateType = {
+  messages: {
+    user: string,
+    content: string
+  }[],
+  activeUsers: string[];
+};
+// intialize chatbox state with dummy data
+
 
 export default function Chatroom() {
   
@@ -18,9 +28,37 @@ export default function Chatroom() {
     })
   }, [id]);
   
+  
+  const chatBoxState: chatBoxStateType = {
+    messages: [
+      {
+        user: 'Jiyoung',
+        content: 'Yo!'
+      },
+      {
+        user: 'Sunny',
+        content: 'Yo'
+      },
+      {
+        user: 'Alwin',
+        content: 'wazgud'
+      },
+      {
+        user: 'Ben',
+        content: 'Sup'
+      },
+      {
+        user: 'Waisan',
+        content: 'Ni haody!'
+      }
+    ],
+    activeUsers: ['Waisan', 'Sunny', 'Alwin', 'Jiyoung', 'Ben']
+  };
+  
+  const [state, setState] = useState(chatBoxState);
   return (
     <div>
-      <ChatBox></ChatBox>
+      <ChatBox state={state} setState={setState}></ChatBox>
       <VideoBox></VideoBox>
     </div>
   );
