@@ -1,7 +1,5 @@
 import { RoomContext } from '@/context/RoomContext';
 import type { InferGetServerSidePropsType, GetServerSideProps } from 'next';
-import Link from 'next/link';
-import { useRouter } from 'next/router';
 import { useContext } from 'react';
 
 type room = {
@@ -24,7 +22,6 @@ export const getServerSideProps: GetServerSideProps = async () => {
 
 function Home({ chatrooms }:HomeProps) {
   const { ws } = useContext(RoomContext);
-  const router = useRouter();
 
   const joinRoom = async (id: string) => {
     await ws.send(JSON.stringify({type: 'create-room', room: id}));

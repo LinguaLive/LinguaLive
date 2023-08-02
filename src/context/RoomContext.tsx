@@ -8,7 +8,6 @@ const ws = new WebSocket('ws://localhost:4000');
 export default function RoomProvider({children}: {children: React.ReactNode}) {
   const router = useRouter();
 
-  
   ws.addEventListener('message', (event) => {
     const {type, room} = JSON.parse(event.data);
     switch (type) {

@@ -10,6 +10,7 @@ const wss = new ws.Server({ noServer: true });
 
 const clients = new Map();
 const rooms:Record<string, string[]> = {}
+// {'roomid': ['user', 'user2']}
 
 // WebSocket connection
 wss.on('connection', (socket:any) => {
@@ -25,19 +26,19 @@ wss.on('connection', (socket:any) => {
         case 'create-room':
           console.log(`client created room : ${message.room}`)
           // create a new room
-          rooms[message.room] = ;
+          rooms[message.room] = [];
           // add client to room
           clients.set(socket, message.room);
           socket.send(JSON.stringify({ type: 'room-created', room: message.room }));
           break;
         case 'join-room':
-          const room = rooms[message.room]
-          if (room) {
-            room.sockets.push(socket);
+          // [] with the list of current participants
+          const participants = rooms[message.room];
+          participants.push(socket)
+          clients.set(socket, message.room);
+          
             socket.send(JSON.stringify({ type: 'room-joined', room: message.room }));
             console.log(`client joined room : ${message.room}`);
-          }
-          clients.set(socket, message.room);
           break;
         default:
           console.warn('Unknown message type:', message.type);
