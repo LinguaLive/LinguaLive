@@ -2,12 +2,38 @@ import NextAuth from "next-auth/next";
 import type { NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import GithubProvider from "next-auth/providers/github";
+import CredentialsProvider from "next-auth/providers/credentials";
 import dbConnect from "../../../../lib/dbConnect";
 import User from "../../../../models/User";
 
 
 export const authOptions:NextAuthOptions = {
   providers: [
+    CredentialsProvider({
+      name: "Credentials",
+      credentials: {
+        email: { label: "Email", type: "text" },
+        password: { label: "Password", type: "password" }
+      },
+      async authorize(credentials, req) {
+        const { email, password } = credentials as {
+          email: string;
+          password: string;
+        };
+        try {
+          await dbConnect()
+            .then(() => "Connected to MongoDB Database")
+            .catch((error) => {
+              error: 'Connection Failed...!';
+            })
+  
+          // // check if user already exists
+          const userExists = await User.findOne({ email, password });
+        } catch (error) {
+          throw new Error('credentials invalid')
+        }
+      }
+    }),
     GithubProvider({
       clientId: process.env.GITHUB_ID,
       clientSecret: process.env.GITHUB_SECRET,
@@ -18,6 +44,9 @@ export const authOptions:NextAuthOptions = {
     }),
   ],
   secret: process.env.NEXTAUTH_SECRET,
+  pages: {
+    signIn: '/auth/login' 
+  },
   callbacks: {
     async signIn(params) {
       const { user, account, profile } = params;
@@ -52,3 +81,7 @@ export const authOptions:NextAuthOptions = {
 }
 
 export default NextAuth(authOptions);
+
+function authorize(credentials: any, req: any): any {
+  throw new Error("Function not implemented.");
+}
