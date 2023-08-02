@@ -7,7 +7,7 @@ export default function ChatFeed(prop) {
   console.log(prop.state);
   prop.state.messages.forEach(element => {
     const message = (
-    <ChatMessage message={element}></ChatMessage>
+    <ChatMessage user={element.user} message={element.content}></ChatMessage>
     );
     messages.push(message);
   });

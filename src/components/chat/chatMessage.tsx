@@ -2,10 +2,9 @@ export default function ChatMessage(prop) {
   // 
   return (
     <div>
-      {prop.message}
+      {`${prop.user}: ${prop.message}`}
     </div>
   )
-
 }
 
 

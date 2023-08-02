@@ -17,7 +17,7 @@ export default function ChatBox(prop) {
     <div>
       ChatBox
       <ChatFeed state={prop.state}></ChatFeed>
-      <ChatInput></ChatInput>
+      <ChatInput state={prop.state} setState={prop.setState}></ChatInput>
     </div>
   )
 }

@@ -46,7 +46,7 @@ export default function Chatroom() {
   const [state, setState] = useState(chatBoxState);
   return (
     <div>
-      <ChatBox state={state}></ChatBox>
+      <ChatBox state={state} setState={setState}></ChatBox>
       <VideoBox></VideoBox>
     </div>
   )
