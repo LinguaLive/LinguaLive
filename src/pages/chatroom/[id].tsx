@@ -7,6 +7,7 @@ import { useRouter } from 'next/router';
 import { useContext, useEffect } from 'react';
 
 export default function Chatroom() {
+  
   const router = useRouter();
   const id = router.query.id;
   const { ws } = useContext(RoomContext);
@@ -15,7 +16,7 @@ export default function Chatroom() {
     ws.addEventListener('open', () => {
       ws.send(JSON.stringify({type: 'join-room', roomId: id}))
     })
-  },[id]);
+  }, [id]);
   
   return (
     <div>
