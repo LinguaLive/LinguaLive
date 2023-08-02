@@ -33,13 +33,11 @@ export const authOptions:NextAuthOptions = {
         const userExists = await User.findOne({ email: profile.email });
         // // if not, create a new user
         if (!userExists) {
-  
           await User.create({
             email: profile.email,
             username: profile.name.replace(/\s/g, '').toLowerCase(),
             profile_pic: profile.picture
           })
-
         }
         return true;
       } catch (error) {

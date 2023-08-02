@@ -13,10 +13,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   })
 
   if (req.method === 'POST') {
-    const { name } = req.body;
+    const { name, language } = req.body;
     // Look at NewRoomForm component for request being made
     // Return new room id
-    const chatroom = await Chatroom.create({ name });
+    const chatroom = await Chatroom.create({ name, language });
     res.status(201).json(chatroom.id)
 
   } else {
