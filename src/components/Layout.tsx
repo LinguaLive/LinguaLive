@@ -13,14 +13,14 @@ type LayoutProps = {
 const Layout = ({children}: LayoutProps) => {
   return (
     <RoomProvider>
-      <div className='main'>
-        <div className='gradient'/>
-      </div>
+        <div className='main'>
+          <div className='gradient'/>
+        </div>
 
-      <main className="app">
-        <Nav />
-        {children}
-      </main>
+        <main className="app">
+          <Nav />
+          {children}
+          </main>
     </RoomProvider>
   )
 }
