@@ -27,8 +27,7 @@ function Home({ chatrooms }:HomeProps) {
   const router = useRouter();
 
   const joinRoom = async (id: string) => {
-    await ws.send(JSON.stringify({type: 'join-room', room: id}));
-    router.push(`/chatroom/${id}`)
+    await ws.send(JSON.stringify({type: 'create-room', room: id}));
   };
 
   // Will need to fetch list of chatrooms from database here

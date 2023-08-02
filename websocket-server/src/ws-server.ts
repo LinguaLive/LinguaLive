@@ -8,9 +8,13 @@ app.use(cors());
 
 const wss = new ws.Server({ noServer: true });
 
-// WebSocket connection handling
+const clients = new Map();
+const rooms:Record<string, string[]> = {}
+
+// WebSocket connection
 wss.on('connection', (socket:any) => {
   console.log('WebSocket connected');
+
   // Event listener to handle messages received from the client
   socket.on('message', (data: any) => {
     try {
@@ -18,8 +22,22 @@ wss.on('connection', (socket:any) => {
       console.log('Message from client:', message);
 
       switch (message.type) {
+        case 'create-room':
+          console.log(`client created room : ${message.room}`)
+          // create a new room
+          rooms[message.room] = ;
+          // add client to room
+          clients.set(socket, message.room);
+          socket.send(JSON.stringify({ type: 'room-created', room: message.room }));
+          break;
         case 'join-room':
-          console.log(`client joined room : ${message.room}`);
+          const room = rooms[message.room]
+          if (room) {
+            room.sockets.push(socket);
+            socket.send(JSON.stringify({ type: 'room-joined', room: message.room }));
+            console.log(`client joined room : ${message.room}`);
+          }
+          clients.set(socket, message.room);
           break;
         default:
           console.warn('Unknown message type:', message.type);
@@ -30,8 +48,11 @@ wss.on('connection', (socket:any) => {
   });
   socket.on('close', () => {
     console.log('WebSocket disconnected');
+    clients.delete(socket)
   });
 });
+
+// Start server
 const server = app.listen(PORT, () => {
   console.log(`listening on PORT ${PORT}`);
 });
