@@ -14,13 +14,6 @@ const LoginForm: React.FC<LoginFormProps> = ({ form }) => {
     const email = emailInput.value;
     const password = pwInput.value;
     if ((emailInput && email !== '') && (pwInput && password !== '')) {
-      // await fetch('/api/notAuthLogin', {
-      //   method: 'POST',
-      //   body: JSON.stringify({
-      //     email,
-      //     password
-      //   })
-      // })
       const res = await signIn('credentials', {
         email,
         password,

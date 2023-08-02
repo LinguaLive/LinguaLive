@@ -160,23 +160,24 @@ const webrtc = () => {
 
   return (
     <>
-      <div>webrtc</div>
+      <div>
       <button className="btn" onClick={handleClick}>WEBRTC TEST</button>
       <button onClick={callClick} className='btn btn-primary m-5'>Call Button</button>
-      <button onClick={answerClick} className="btn btn-accent m-5">Answer Button</button>
-      <div>
-        <button onClick={handleMute} className='btn btn-sm btn-error m-2' >Mute</button>
-        <button onClick={handleCamOff} className="btn btn-sm btn-info m-2" >Turn Off Cam</button>
+      <button onClick={answerClick} className="btn btn-accent">Answer Button</button>
       </div>
-      <input type="text" className="input-success" />
 
       <video id="myVideo" ref={video => {
         if(video) video.srcObject = localStream
       }} autoPlay playsInline/>
+      <div>
+        <button onClick={handleMute} className='btn btn-sm btn-error m-2' >Mute</button>
+        <button onClick={handleCamOff} className="btn btn-sm btn-info m-2" >Turn Off Cam</button>
+      </div>
 
       <video id="remoteVideo" ref={video => {
         if(video) video.srcObject = remoteStream
-      }} autoPlay playsInline/>
+      }} autoPlay playsInline />
+      
     </>
   )
 }

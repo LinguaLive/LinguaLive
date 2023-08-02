@@ -60,9 +60,6 @@ const Login = ({providers}:LoginProps) => {
         <LoginForm/>
 
         <p className='text-sm mb-2'>Sign In With An Existing Account:</p>
-        {/* <button onClick={() => signIn()} className="btn btn-outline hover:bg-blue-400 hover:border-blue-400 w-80">
-          Sign In With A Different Account
-        </button> */}
         {providers &&
           Object.values(providers).map(provider => {
             if (provider.name !== "Credentials") {

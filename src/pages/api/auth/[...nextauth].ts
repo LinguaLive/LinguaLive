@@ -29,6 +29,14 @@ export const authOptions:NextAuthOptions = {
   
           // // check if user already exists
           const userExists = await User.findOne({ email, password });
+          if (!userExists) {
+            await User.create({
+              email: profile.email,
+              username: profile.name.replace(/\s/g, '').toLowerCase(),
+              profile_pic: profile.picture
+            })
+          }
+          return true;
         } catch (error) {
           throw new Error('credentials invalid')
         }
@@ -57,7 +65,7 @@ export const authOptions:NextAuthOptions = {
         .catch((error) => {
           error: 'Connection Failed...!';
         })
-
+        console.log(profile)
         // // check if user already exists
         const userExists = await User.findOne({ email: profile.email });
         // // if not, create a new user
