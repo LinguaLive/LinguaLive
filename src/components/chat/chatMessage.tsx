@@ -1,23 +1,11 @@
-export default function ChatMessage() {
+export default function ChatMessage(prop) {
+  // 
   return (
     <div>
-      <div>
-      ~~~~Sam Pull: Message!
-      </div>
-      <div>
-      ~~~~Sam Pull: Message!
-      </div>
-      <div>
-      ~~~~Sam Pull: Message!
-      </div>
-      <div>
-      ~~~~Sam Pull: Message!
-      </div>
-      <div>
-      ~~~~Sam Pull: Message!
-      </div>
+      {prop.message}
     </div>
   )
+
 }
 
 

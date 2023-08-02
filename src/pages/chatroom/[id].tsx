@@ -1,4 +1,5 @@
 // here is where the chatroom page is gonna be served, start rendering video componenent and chat component here
+import React, { useState } from "react";
 
 import ChatBox from "@/components/chat/chatBox"
 import VideoBox from "@/components/video/videoBox"
@@ -11,36 +12,41 @@ type chatBoxStateType = {
   activeUsers: string[];
 };
 // intialize chatbox state with dummy data
-const chatBoxState: chatBoxStateType = {
-  messages: [
-    {
-      user: 'Waisan',
-      content: 'Yo!'
-    },
-    {
-      user: 'Sunny',
-      content: 'Yo'
-    },
-    {
-      user: 'Alwin',
-      content: 'wazgud'
-    },
-    {
-      user: 'Ben',
-      content: 'Sup'
-    },
-    {
-      user: 'Waisan',
-      content: 'Ni haody!'
-    }
-  ],
-  activeUsers: ['Waisan', 'Sunny', 'Alwin', 'Jiyoung', 'Ben']
-};
 
-export default function Chatroom(chatBoxState: chatBoxStateType) {
+
+export default function Chatroom() {
+  
+  
+  const chatBoxState: chatBoxStateType = {
+    messages: [
+      {
+        user: 'Jiyoung',
+        content: 'Yo!'
+      },
+      {
+        user: 'Sunny',
+        content: 'Yo'
+      },
+      {
+        user: 'Alwin',
+        content: 'wazgud'
+      },
+      {
+        user: 'Ben',
+        content: 'Sup'
+      },
+      {
+        user: 'Waisan',
+        content: 'Ni haody!'
+      }
+    ],
+    activeUsers: ['Waisan', 'Sunny', 'Alwin', 'Jiyoung', 'Ben']
+  };
+  
+  const [state, setState] = useState(chatBoxState);
   return (
     <div>
-      <ChatBox state={chatBoxState}></ChatBox>
+      <ChatBox state={state}></ChatBox>
       <VideoBox></VideoBox>
     </div>
   )
