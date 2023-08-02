@@ -1,5 +1,4 @@
 import RoomProvider from "@/context/RoomContext";
-import DBProvider from "@/context/DBContext";
 import Nav from "./Nav";
 
 export const metadata = {
@@ -14,7 +13,6 @@ type LayoutProps = {
 const Layout = ({children}: LayoutProps) => {
   return (
     <RoomProvider>
-      <DBProvider>
         <div className='main'>
           <div className='gradient'/>
         </div>
@@ -23,7 +21,6 @@ const Layout = ({children}: LayoutProps) => {
           <Nav />
           {children}
           </main>
-      </DBProvider>
     </RoomProvider>
   )
 }

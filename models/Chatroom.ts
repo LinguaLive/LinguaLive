@@ -14,7 +14,7 @@ const ChatroomSchema = new mongoose.Schema({
   expireAt: {
     type: Date,
     default: new Date(),
-    expires: 4320,
+    expires: 86400, // In seconds, room expires after 24 hours
   }
 }, { timestamps: true });
 

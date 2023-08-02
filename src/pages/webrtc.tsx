@@ -1,13 +1,16 @@
 'use client';
 
-import { useEffect, useState } from "react";
-import { Calls } from '../../models/Calls';
-
+import { useEffect, useState, useContext } from "react";
+import { RoomContext } from '@/context/RoomContext';
 
 const webrtc = () => {
   const [pc, setPC] = useState<RTCPeerConnection | null>(null)
   const [localStream, setLocalStream] = useState<MediaStream | null>(null);
   const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
+  const [canCall, setCanCall] = useState(false);
+  const [canAnswer, setCanAnswer] = useState(false);
+  const { ws } = useContext(RoomContext);
+
 
   const servers = {
     iceServers: [
@@ -19,7 +22,7 @@ const webrtc = () => {
   }
 
   useEffect(() => {
-    const connection = new RTCPeerConnection(servers);
+    const connection = new RTCPeerConnection();
     setPC(() => connection);
   }, []);
 
@@ -28,6 +31,7 @@ const webrtc = () => {
     const remoteStream = new MediaStream();
     setLocalStream(() => stream)
     setRemoteStream(() => remoteStream);
+    setCanCall(true);
   }
 
   console.log('peer connection', pc)
@@ -36,7 +40,7 @@ const webrtc = () => {
 
   useEffect(() => {
     // Push tracks from local stream to peer connection
-    console.log('tracks', localStream?.getTracks())
+    // console.log('tracks', localStream?.getTracks())
     localStream?.getTracks().forEach(track => {
       pc?.addTrack(track, localStream);
     });
@@ -44,27 +48,24 @@ const webrtc = () => {
     // Pull tracks from remote stream, add to video stream
     if (pc) {
       pc.ontrack = event => {
+        console.log('remote tracks', event)
         event.streams[0].getTracks().forEach(track => {
           remoteStream?.addTrack(track)
         })
       }
+      pc.onsignalingstatechange = event => console.log('signaling state change', event);
     }
-  }, [remoteStream])
+  }, [localStream, remoteStream])
   
 
   // NEED TO ADD A GET REQUEST FOR CALLS DOCS SOMEWHERE AND USE ID FOR THE CHATROOM OR USE CHATROOM COLLECTION
     // EACH ROOM WILL HAVE A UNIQUE ID THAT IS GRABBED PROBABLY FROM HOMEPAGE
       // MIGHT NEED TO KEEP A CONNECT BUTTON IN THE CHATROOM PAGE TO SET THE LOCAL STREAM?
 
-
+  
   // ---------Calling----------
   const callClick = async () => {
-    if (pc) {
-      pc.onicecandidate = event => {
-        event.candidate
-        // Need to add a post request to save to offercandidates collection?
-      }
-    }
+    if (!canCall) return;
 
     const offerDescription = await pc?.createOffer();
     await pc?.setLocalDescription(offerDescription);
@@ -72,74 +73,90 @@ const webrtc = () => {
       sdp: offerDescription?.sdp,
       type: offerDescription?.type,
     }
-    const data = await fetch('/api/offers', {
-      method: 'POST',
-      body: JSON.stringify(offer)
-    });
-    const res = await data.json();
 
-    // -------Event listener for change on Calls collection-------
-      // ******CAN'T PUT THIS HERE******
-    // Calls.watch().on('change', data => {
-    //   const { documentKey } = data;
+    await ws.send(JSON.stringify({ type: 'new-offer', offer }));
 
-    //   // this isn't exactly right, need to see what the data looks like. Need to check for new answer on the new / updated Call document?
-    //   if (!pc?.currentRemoteDescription && data?.answer) {
-    //     const answerDescription = new RTCSessionDescription(data.answer);
-    //     pc?.setRemoteDescription(answerDescription);
-    //   }
-
-    //   // Use documentKey from updated document to query for associated answer documents
-    //   fetch('/api/calls', {
-    //     method: 'POST',
-    //     body: JSON.stringify(documentKey.id)
-    //   })
-    //     .then(res => data.json())
-    //     .then(data => {
-    //       // Probably need to destructure the data to get the right info
-    //       data.answerCandidates.forEach((candidate: RTCIceCandidateInit | undefined) => {
-    //         const answerCandidate = new RTCIceCandidate(candidate);
-    //         pc?.addIceCandidate(answerCandidate);
-    //       })
-    //     })
-    // });
-  }
-
-
-  // ---------Answering----------
-  const answerClick = async () => {
-      // on click grab the chatroom id, query DB for call doc with the id and get answerCandidates on that document
     if (pc) {
       pc.onicecandidate = event => {
-        event.candidate && console.log(event.candidate)
-          // add to answerCandidates on the chatroom/call document
+        event.candidate &&
+        // Send the ICE candidate to the remote peer
+          ws.send(JSON.stringify({ type: 'ice-candidate', candidate: event.candidate }));
       }
-      
-      // fetch offer data
-      // offerDescription = offer
-      await pc.setRemoteDescription(new RTCSessionDescription(offerDescription))
-
-      const answerDescription = await pc.createAnswer();
-      await pc.setLocalDescription(answerDescription);
-
-      const answer = {
-        type: answerDescription.type,
-        sdp: answerDescription.sdp
-      }
-      const data = await fetch('/api/answers', {
-        method: 'POST',
-        body: JSON.stringify(answer)
-      });
-      const res = await data.json();
-
-
-      // -----Listen for updates on offerCandidates----
-        // Need to somehow listen for updates on the offerCandidates
-        // iterate through and pc.addIceCandidate(new RTCIceCandidate(data))
+    }
+    setCanCall(false);
+  }
+  
+  ws.onmessage = async (message: any) => {
+    const data = JSON.parse(message.data);
+    console.log('message from server', data);
+    switch (data.type) {
+      case 'ice-candidate':
+        // console.log(data.candidate);
+        if (!pc) {
+          console.error('no peerconnection');
+        }
+        if (!data.candidate) {
+          await pc?.addIceCandidate(undefined);
+        } else {
+          pc?.addIceCandidate(new RTCIceCandidate(data.candidate));
+        }
+        break;
+      case 'answers':
+        // when answer received
+        console.log('answer', data.answer);
+        console.log('pc after answer', pc);
+        if (!pc?.currentRemoteDescription && data?.answer) {
+          const answerDescription = new RTCSessionDescription(data.answer);
+          pc?.setRemoteDescription(answerDescription);
+        }
+        break;
+      case 'offers':
+        // when offer received
+        console.log('offer', data.offers);
+        console.log('pc after offer', pc);
+        const offerDescription = data.offers;
+        await pc?.setRemoteDescription(new RTCSessionDescription(offerDescription))
       
     }
   }
+
+  // ---------Answering----------
+  const answerClick = async () => {
+    // if (!canAnswer) return;
+      // on click grab the chatroom id, query DB for call doc with the id and get answerCandidates on that document
+    if (pc) {
+      pc.onicecandidate = event => {
+        event.candidate &&
+          // send answer candidates
+          ws.send(JSON.stringify({ type: 'ice-candidate', candidate: event.candidate, pc }));
+        console.log('event candidate', event.candidate);
+      }
+    }
+    const answerDescription = await pc?.createAnswer();
     
+    if (answerDescription) {
+      await pc?.setLocalDescription(answerDescription);
+    }
+
+      const answer = {
+        type: answerDescription?.type,
+        sdp: answerDescription?.sdp
+      }
+
+      await ws.send(JSON.stringify({ type: 'new-answer', answer }));
+      
+  }
+    
+  const handleMute = () => {
+    localStream?.getAudioTracks().forEach(track => {
+      track.enabled = !track.enabled
+    })
+  }
+  const handleCamOff = () => {
+    localStream?.getVideoTracks().forEach(track => {
+      track.enabled = !track.enabled
+    })
+  }
 
   return (
     <>
@@ -147,6 +164,10 @@ const webrtc = () => {
       <button className="btn" onClick={handleClick}>WEBRTC TEST</button>
       <button onClick={callClick} className='btn btn-primary m-5'>Call Button</button>
       <button onClick={answerClick} className="btn btn-accent m-5">Answer Button</button>
+      <div>
+        <button onClick={handleMute} className='btn btn-sm btn-error m-2' >Mute</button>
+        <button onClick={handleCamOff} className="btn btn-sm btn-info m-2" >Turn Off Cam</button>
+      </div>
       <input type="text" className="input-success" />
 
       <video id="myVideo" ref={video => {
