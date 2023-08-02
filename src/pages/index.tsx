@@ -13,7 +13,8 @@ declare global {
 
 type room = {
   id: string,
-  name: string
+  name: string,
+  language: string
 }
 type chatrooms = Array<room>
 type HomeProps = {
