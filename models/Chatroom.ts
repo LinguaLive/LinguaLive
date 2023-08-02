@@ -11,12 +11,9 @@ const ChatroomSchema = new mongoose.Schema({
 //     }, { timestamps: true }
 //     )
 //   ],
-  expireAt: {
-    type: Date,
-    default: new Date(),
-    expires: 86400, // In seconds, room expires after 24 hours
-  }
 }, { timestamps: true });
+
+ChatroomSchema.index({ createdAt: 1 }, { expireAfterSeconds: 86400 }); // Deleted after 24 hours
 
 const Chatroom = mongoose.models.Chatroom || mongoose.model('Chatroom', ChatroomSchema);
 
