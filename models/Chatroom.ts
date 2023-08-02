@@ -1,7 +1,9 @@
 import mongoose from 'mongoose'
 
 const ChatroomSchema = new mongoose.Schema({
-  users: [String],
+  name: {type: String, require: true},
+  users: {type: [String], default: []},
+  language: {type: String, require: true},
 //   messages: [
 //     new mongoose.Schema ({ 
 //     username: String,
@@ -12,7 +14,7 @@ const ChatroomSchema = new mongoose.Schema({
   expireAt: {
     type: Date,
     default: new Date(),
-    expires: 4320,
+    expires: 86400, // In seconds, room expires after 24 hours
   }
 }, { timestamps: true });
 

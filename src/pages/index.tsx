@@ -41,10 +41,11 @@ function Home({ chatrooms }:HomeProps) {
   };
 
   const chatroomList = chatrooms.map(room => {
-    const { id, name } = room;
+    const { id, name, language } = room;
     return (
       <li key={id} className='m-2 text-neutral list-none'>
         <p className=' text-xl mb-1 font-semibold'>{name}</p>
+        <p className=' text-sm mb-1 font-semibold'>{language}</p>
         <p className=' text-xs'># of participants</p>
         <button onClick={() => joinRoom(id)} className='btn btn-secondary btn-sm rounded-full m-2 text-base-100'>Click to Join</button>
       </li>
