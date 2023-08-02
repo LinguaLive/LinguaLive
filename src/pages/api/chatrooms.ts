@@ -2,8 +2,10 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import dbConnect from "./../../../lib/dbConnect";
 import Chatroom from "./../../../models/Chatroom";
 
+
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   
+  // query the database here and add new chatroom
   await dbConnect()
   .then(() => "Connected to MongoDB Database")
   .catch((error) => {
@@ -11,15 +13,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   })
 
   if (req.method === 'POST') {
-    // query the database here and add new chatroom
-    await Chatroom.create({
-      language: req
-    })
+    const { name } = req.body;
+    // Look at NewRoomForm component for request being made
+    // Return new room id
+    const chatroom = await Chatroom.create({ name });
+    res.status(201).json(chatroom.id)
 
   } else {
     // Add logic to fetch from database and return list of chatrooms
-    const chatrooms = Chatroom.find({});
+    const chatrooms = await Chatroom.find({});
+    res.status(200).json(chatrooms)
   }
 
-  res.status(200).json(chatrooms);
 }

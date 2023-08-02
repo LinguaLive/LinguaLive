@@ -21,7 +21,6 @@ export const authOptions:NextAuthOptions = {
   callbacks: {
     async signIn(params) {
       const { user, account, profile } = params;
-      // console.log(profile)
 
       try {
         await dbConnect()
