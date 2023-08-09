@@ -2,7 +2,7 @@
 
 Practice a language and connect with native speakers or other language enthusiasts!
 
-##Getting Started
+## Getting Started
 
 First, navigate to `/websocket-server` and run:
 
